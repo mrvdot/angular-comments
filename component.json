@@ -1,0 +1,13 @@
+{
+  "name": "angular-comments",
+  "version": "0.1.0",
+  "main": "scripts/comments.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ],
+  "dependencies": {
+    "angular-mvd-tunnels": "~0.0.5"
+  }
+}

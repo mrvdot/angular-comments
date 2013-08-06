@@ -1,0 +1,8 @@
+{
+  "name": "angular-mvd-tunnels",
+  "version": "0.0.5",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mrvdot/angular-tunnels"
+  }
+}
