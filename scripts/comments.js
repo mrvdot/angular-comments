@@ -345,15 +345,20 @@
     return {
       template : tpl,
       replace : true,
-      require : 'mvdTunnel',
+      require : '?mvdTunnel',
       scope : {
-        'element' : '=comments',
-        'elementId' : '=elementId'
+        'element' : '=comments'
       },
       link : function ($scope, $element, $attrs, tunnel) {
         $scope.numComments = -1;
         $scope.threadLoaded = false;
         $scope.loadingThread = false;
+
+        tunnel = tunnel || {
+          listen : angular.noop,
+          send : angular.noop,
+          on : angular.noop
+        }
 
         var slug;
 
@@ -371,23 +376,26 @@
           });
         }
 
-        $scope.$watch('element.slug', function (nv, ov) {
-          if (!nv) {
-            return;
-          };
-          slug = nv;
+        var objectWatch = function (elSlug) {
+          slug = elSlug;
           var title = $scope.element.title || $scope.element.name;
           var url = $scope.element.url || undefined;
           attachListeners(slug);
-          commentService.loadCount(nv, $element, title, url);
-        });
+          commentService.loadCount(elSlug, $element, title, url);
+        }
 
-        $scope.$watch('elementId', function (nv, ov) {
+        var off = $scope.$watch('element', function (nv, ov) {
           if (!nv) {
             return;
           };
+          if (angular.isObject(nv)) {
+            off();
+            objectWatch(nv);
+            off = $scope.$watch('element.slug', objectWatch);
+            return;
+          };
           slug = nv;
-          attachListeners(slug);
+          attachListeners(nv);
           commentService.loadCount(nv, $element);
         });
 

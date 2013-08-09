@@ -9,5 +9,9 @@
   ],
   "dependencies": {
     "angular-mvd-tunnels": "~0.0.5"
+  },
+  "devDependencies": {
+    "angular-mvd-tunnels": "~0.0.5",
+    "angular-mocks": "~1.0.7"
   }
 }
