@@ -332,7 +332,7 @@
 
     var loads = {};
 
-    var loadCount = function (slug, $element) {
+    var loadCount = function (slug, $element, title, url) {
       if (!siteId) {
         throw Error("Must specify siteId before initializing disqus");
       };
@@ -349,7 +349,7 @@
 
       if (displayOnLoad && !lastSlug) {
         //Auto load first comment thread
-        loadThread(slug, $element);
+        loadThread(slug, $element, title, url);
       };
     }
 
@@ -390,7 +390,7 @@
       replace : true,
       require : '?mvdTunnel',
       scope : {
-        'element' : '=comments'
+        'commentElement' : '=comments'
       },
       link : function ($scope, $element, $attrs, tunnel) {
         $scope.numComments = -1;
@@ -420,21 +420,21 @@
         }
 
         var objectWatch = function (elSlug) {
-          slug = elSlug;
-          var title = $scope.element.title || $scope.element.name;
-          var url = $scope.element.url || undefined;
+          slug = elSlug.slug;
+          var title = $scope.commentElement.title || $scope.commentElement.name;
+          var url = $scope.commentElement.url || undefined;
           attachListeners(slug);
-          commentService.loadCount(elSlug, $element, title, url);
+          commentService.loadCount(slug, $element, title, url);
         }
 
-        var off = $scope.$watch('element', function (nv, ov) {
+        var off = $scope.$watch('commentElement', function (nv, ov) {
           if (!nv) {
             return;
           };
           if (angular.isObject(nv)) {
             off();
             objectWatch(nv);
-            off = $scope.$watch('element.slug', objectWatch);
+            off = $scope.$watch('commentElement.slug', objectWatch);
             return;
           };
           slug = nv;
@@ -444,8 +444,8 @@
 
         $scope.loadThread = function () {
           $scope.loadingThread = true;
-          var title = $scope.element && $scope.element.title || undefined;
-          var url = $scope.element && $scope.element.url || undefined;
+          var title = $scope.commentElement && $scope.commentElement.title || undefined;
+          var url = $scope.commentElement && $scope.commentElement.url || undefined;
           commentService.loadThread(slug, $element, title, url);
         };
       }

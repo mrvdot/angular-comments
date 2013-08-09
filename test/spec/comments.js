@@ -49,7 +49,7 @@ describe('Angular Comments', function () {
 
 		elScope.$apply();
 
-		expect(elScope.element).toEqual(jasmine.any(String));
+		expect(elScope.commentElement).toEqual(jasmine.any(String));
 		expect(commentService.loadCount).toHaveBeenCalledWith('testSlug', $element);
 	});
 
@@ -69,7 +69,7 @@ describe('Angular Comments', function () {
 
 		elScope.$apply();
 
-		expect(elScope.element).toEqual(jasmine.any(Object));
+		expect(elScope.commentElement).toEqual(jasmine.any(Object));
 		expect(commentService.loadCount).toHaveBeenCalledWith(el.slug, $element, el.title, el.url);
 	});
 });
