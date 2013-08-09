@@ -5,7 +5,14 @@
       , provider
       , displayOnLoad = true
       , baseUrl
+      , showCommentCount = true
       , userCallbacks = {}
+      , loadingText = 'Loading comment count...'
+      , commentTextMap = {
+        '0' : 'No comments yet',
+        '1' : 'One comment',
+        'other' : '{} comments'
+      }
       , callbacks = {
         onCommentPosted : angular.noop,
         onCommentCountUpdated : function (slug, count) {
@@ -39,6 +46,12 @@
       getDisplayOnLoad : function () {
         return displayOnLoad;
       },
+      setShowCommentCount : function (val) {
+        showCommentCount = val
+      },
+      getShowCommentCount : function () {
+        return showCommentCount;
+      },
       getBaseUrl : function () {
         return baseUrl || $location.get('protocol') + '://' + $location.get('host') + '/';
       },
@@ -48,6 +61,20 @@
         };
         baseUrl = url;
         return methods;
+      },
+      setCommentTextMap : function (map) {
+        commentTextMap = map;
+      },
+      getCommentTextMap : function () {
+        var map = angular.copy(commentTextMap);
+        map['-1'] = methods.getLoadingText();
+        return map;
+      },
+      setLoadingText : function (text) {
+        loadingText = text;
+      },
+      getLoadingText : function () {
+        return loadingText;
       },
       setCallback : function (callback, fn) {
         if (angular.isObject(callback)) {
@@ -332,15 +359,26 @@
 
     return $injector.get(commentProviderName);
   })
-  .directive('comments', function (commentService) {
+  .directive('comments', function (commentService, commentConfig) {
+    var whenStmt = angular.toJson(commentConfig.getCommentTextMap())
+      .replace(/\\\"/g,'&quot;')
+      .replace(/\"/g, '\'')
     var tpl = '<div class="comments">' + 
-      '<p class="comment-count" ng-hide="threadLoaded">' + 
-        '<span ng-click="loadThread()" ng-pluralize count="numComments" when="{\'-1\' : \'Loading comment count...\',  \'0\' : \'No comments yet, be the first!\', \'one\' : \'Somebody got FIRST! comment, care to join in?\', \'other\' : \'{} comments already, want to join in the conversation?\' }"></span>' + 
-        '<span class="loader" ng-show="loadingThread"><img src="themes/clean-blog/images/loader-small.gif" /></span>' + 
-      '</p>' + 
+      (commentConfig.getShowCommentCount() ?
+        ('<p class="comment-count" ng-hide="threadLoaded">' + 
+          '<span ng-click="loadThread()" ng-pluralize count="numComments" when="' + whenStmt + '"></span>' + 
+          '<span class="loader" ng-show="loadingThread"><img src="themes/clean-blog/images/loader-small.gif" /></span>' + 
+        '</p>')
+        : ('<p class="show-comments" ng-hide="threadLoaded">' + 
+          '<span ng-click="loadThread()">Show comments</span>' + 
+          '<span class="loader" ng-show="loadingThread"><img src="themes/clean-blog/images/loader-small.gif" /></span>' + 
+        '</p>'))
+      + 
       '<div class="thread" ng-show="threadLoaded">' + 
       '</div>' + 
     '</div>';
+
+    console.log(tpl);
 
     return {
       template : tpl,
