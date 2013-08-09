@@ -378,8 +378,6 @@
       '</div>' + 
     '</div>';
 
-    console.log(tpl);
-
     return {
       template : tpl,
       replace : true,
