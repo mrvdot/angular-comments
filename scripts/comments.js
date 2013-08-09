@@ -43,11 +43,16 @@
       getProvider : function () {
         return provider;
       },
+      setDisplayOnLoad : function (val) {
+        displayOnLoad = val;
+        return methods
+      },
       getDisplayOnLoad : function () {
         return displayOnLoad;
       },
       setShowCommentCount : function (val) {
-        showCommentCount = val
+        showCommentCount = val;
+        return methods;
       },
       getShowCommentCount : function () {
         return showCommentCount;
@@ -64,6 +69,7 @@
       },
       setCommentTextMap : function (map) {
         commentTextMap = map;
+        return methods;
       },
       getCommentTextMap : function () {
         var map = angular.copy(commentTextMap);
@@ -72,6 +78,7 @@
       },
       setLoadingText : function (text) {
         loadingText = text;
+        return methods;
       },
       getLoadingText : function () {
         return loadingText;
@@ -228,7 +235,7 @@
       , lastSlug
       , siteId = commentConfig.getSiteId()
       , baseUrl = commentConfig.getBaseUrl()
-     , displayOnLoad = commentConfig.getDisplayOnLoad();
+      , displayOnLoad = commentConfig.getDisplayOnLoad();
     
     window.disqus_shortname = siteId;
 
