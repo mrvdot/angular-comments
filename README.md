@@ -39,7 +39,7 @@ In addition to the basic settings necessary for connecting your site to Disqus/L
 
 * **setSiteId**: Specify the site Id or forum name for your site
     * required
-* **setForumName**: Alias for setSiteId to confirm with Disqus terminology
+* **setForumName**: Alias for `setSiteId` to confirm with Disqus terminology
 * **setProvider**: Specify which commenting platform you want to use (currently supported values: `livefyre` and `disqus`)
     * required
 * **setDisplayOnLoad**: Enable/disable whether or not to load comment thread immediately
@@ -74,8 +74,9 @@ In addition to the basic settings necessary for connecting your site to Disqus/L
         * onThreadLoaded
             * Params: articleId, container (_jqLite object of DOM element containing thread_)
     * example:
-        ```javascript
-        commentConfig.setCallback('onCommentPosted', function (slug, data) {
-            analytics.track('commentPosted', slug);
-        });
-        ```
+
+```javascript
+commentConfig.setCallback('onCommentPosted', function (slug, data) {
+    analytics.track('commentPosted', slug);
+});
+```
