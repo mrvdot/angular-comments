@@ -68,11 +68,11 @@ In addition to the basic settings necessary for connecting your site to Disqus/L
     * optional
     * supported callbacks: 
         * onCommentPosted
-            * Params: articleId, data (*data is specific to each platform*)
+            * Params: `articleId`, `data` (*data is specific to each platform*)
         * onCommentCountUpdated
-            * Params: articleId, count
+            * Params: `articleId`, `count`
         * onThreadLoaded
-            * Params: articleId, container (*jqLite object of DOM element containing thread*)
+            * Params: `articleId`, `container` (*jqLite object of DOM element containing thread*)
     * example:
 
 ```javascript
