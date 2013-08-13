@@ -366,7 +366,7 @@
 
     return $injector.get(commentProviderName);
   })
-  .directive('comments', function (commentService, commentConfig) {
+  .directive('comments', function (commentService, commentConfig, mvdTunnelMap) {
     var whenStmt = angular.toJson(commentConfig.getCommentTextMap())
       .replace(/\\\"/g,'&quot;')
       .replace(/\"/g, '\'')
@@ -388,32 +388,27 @@
     return {
       template : tpl,
       replace : true,
-      require : '?mvdTunnel',
       scope : {
         'commentElement' : '=comments'
       },
-      link : function ($scope, $element, $attrs, tunnel) {
+      link : function ($scope, $element, $attrs) {
         $scope.numComments = -1;
         $scope.threadLoaded = false;
         $scope.loadingThread = false;
 
-        tunnel = tunnel || {
-          listen : angular.noop,
-          send : angular.noop,
-          on : angular.noop
-        }
+        var namespace = 'comments';
 
         var slug;
 
         var attachListeners = function (slug) {
-          tunnel.on('comment-count-updated-'+slug, function (ev, targetSlug, count) {
+          mvdTunnelMap.listen(namespace, 'comment-count-updated-'+slug, function (ev, targetSlug, count) {
             if (angular.isUndefined(count)) {
               return;
             };
             $scope.numComments = count;
           });
 
-          tunnel.on('thread-loaded', function (ev, targetSlug) {
+          mvdTunnelMap.listen(namespace, 'thread-loaded', function (ev, targetSlug) {
             $scope.threadLoaded = (targetSlug == slug);
             $scope.loadingThread = false;
           });
