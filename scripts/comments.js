@@ -420,7 +420,7 @@
         }
 
         var objectWatch = function (elSlug) {
-          slug = elSlug.slug;
+          slug = elSlug;
           var title = $scope.commentElement.title || $scope.commentElement.name;
           var url = $scope.commentElement.url || undefined;
           attachListeners(slug);
@@ -433,7 +433,7 @@
           };
           if (angular.isObject(nv)) {
             off();
-            objectWatch(nv);
+            objectWatch(nv.slug);
             off = $scope.$watch('commentElement.slug', objectWatch);
             return;
           };
