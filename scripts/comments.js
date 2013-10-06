@@ -58,7 +58,7 @@
         return showCommentCount;
       },
       getBaseUrl : function () {
-        return baseUrl || $location.get('protocol') + '://' + $location.get('host') + '/';
+        return baseUrl || $location.protocol() + '://' + $location.host() + '/';
       },
       setBaseUrl : function (url) {
         if (url.charAt(url.length - 1) != '/') {
@@ -136,13 +136,13 @@
       (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(c);
     })();
 
-    var loadCount = function (slug, $element, title, url) {
+    var loadCount = function (slug, $element, title, url, countOnly) {
       if (!siteId) {
         throw Error("Must specify siteId before initializing lifefyre");
       };
       if (!window.LF) {
         setTimeout(function () {
-          loadCount(slug, $element, title, url);
+          loadCount(slug, $element, title, url, countOnly);
         }, 100);
         return;
       };
@@ -156,7 +156,7 @@
         }
       });
 
-      if (displayOnLoad && !lastSlug) {
+      if (displayOnLoad && !lastSlug && !countOnly) {
         loadThread(slug, $element, title, url);
       };
     }
@@ -332,7 +332,7 @@
 
     var loads = {};
 
-    var loadCount = function (slug, $element, title, url) {
+    var loadCount = function (slug, $element, title, url, countOnly) {
       if (!siteId) {
         throw Error("Must specify siteId before initializing disqus");
       };
@@ -347,7 +347,7 @@
 
       loads[uid] = slug;
 
-      if (displayOnLoad && !lastSlug) {
+      if (displayOnLoad && !lastSlug && !countOnly) {
         //Auto load first comment thread
         loadThread(slug, $element, title, url);
       };
@@ -443,6 +443,44 @@
           var url = $scope.commentElement && $scope.commentElement.url || undefined;
           commentService.loadThread(slug, $element, title, url);
         };
+      }
+    }
+  })
+  .directive('commentCount', function(commentService, mvdTunnelMap) {
+    return {
+      template : '{{count}}',
+      scope : {
+        'commentElement' : '=commentCount'
+      },
+      link : function ($scope, $element, $attrs) {
+        $scope.count = 0;
+
+        var off;
+
+        var attachListeners = function (slug) {
+          mvdTunnelMap.listen('comments', 'comment-count-updated-'+slug, function (ev, targetSlug, count) {
+            if (angular.isUndefined(count)) {
+              return;
+            };
+            $scope.count = count;
+          });
+        }
+
+        var watcher = function (nv, ov) {
+          if (!nv) {
+            return;
+          };
+          if (angular.isObject(nv)) {
+            off();
+            off = $scope.$watch('commentElement.slug', watcher);
+            return;
+          };
+          slug = nv;
+          attachListeners(nv);
+          commentService.loadCount(nv, null, null, null, true);
+        }
+
+        off = $scope.$watch('commentElement', watcher);
       }
     }
   });
