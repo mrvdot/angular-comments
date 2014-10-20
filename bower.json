@@ -1,6 +1,6 @@
 {
   "name": "angular-comments",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "scripts/comments.js",
   "ignore": [
     "**/.*",
@@ -8,10 +8,10 @@
     "components"
   ],
   "dependencies": {
-    "angular-tunnels": "~0.0.6"
+    "angular": "~1.3.0",
+    "angular-tunnels": "~0.0.9"
   },
   "devDependencies": {
-    "angular-tunnels": "~0.0.6",
-    "angular-mocks": "~1.2.x"
+    "angular-mocks": "~1.3.0"
   }
 }

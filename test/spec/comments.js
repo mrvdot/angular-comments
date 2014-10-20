@@ -4,29 +4,31 @@ describe('Angular Comments', function () {
 		, $injector
 		, tpl = '<div comments="element"></div>';
 
-	beforeEach(module('mvd.comments'));
+	beforeEach(function () {
+		module('mvd.comments')
 
-	beforeEach(module(function($provide) {
-		var commentService = {
-			loadThread : function (slug, element, title, url) {
+		module(function($provide) {
+			var commentService = {
+				loadThread : function (slug, element, title, url) {
 
-			},
-			loadCount : function (slug, element, title, url) {
-				dump('loadCount',slug);
-			}
-		};
+				},
+				loadCount : function (slug, element, title, url) {
+					dump('loadCount',slug);
+				}
+			};
 
-		spyOn(commentService,'loadThread');
-		spyOn(commentService,'loadCount');
+			spyOn(commentService,'loadThread');
+			spyOn(commentService,'loadCount');
 
-		$provide.value('commentService', commentService);
-	}));
-
-	beforeEach(inject(function (_$compile_, _$rootScope_, _$injector_) {
-		$compile = _$compile_;
-		$rootScope = _$rootScope_;
-		$injector = _$injector_;
-	}));
+			$provide.value('commentService', commentService);
+		});
+		
+		inject(function (_$compile_, _$rootScope_, _$injector_) {
+			$compile = _$compile_;
+			$rootScope = _$rootScope_;
+			$injector = _$injector_;
+		})
+	});
 
 	it('should compile the template', function () {
 		var $scope = $rootScope.$new();
@@ -43,7 +45,7 @@ describe('Angular Comments', function () {
 
 		var $element = $compile(tpl)($scope);
 
-		var elScope = $element.scope();
+		var elScope = $element.isolateScope();
 
 		var commentService = $injector.get('commentService');
 
@@ -64,7 +66,7 @@ describe('Angular Comments', function () {
 		$scope.element = el;
 
 		var $element = $compile(tpl)($scope);
-		var elScope = $element.scope();
+		var elScope = $element.isolateScope();
 		var commentService = $injector.get('commentService');
 
 		elScope.$apply();

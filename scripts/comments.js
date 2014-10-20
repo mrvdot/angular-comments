@@ -7,6 +7,7 @@
       , baseUrl
       , showCommentCount = true
       , userCallbacks = {}
+      , loadingImage = null
       , loadingText = 'Loading comment count...'
       , commentTextMap = {
         '0' : 'No comments yet',
@@ -111,6 +112,13 @@
             userCallbacks[callback].apply(this, arguments);
           }
         return fullCB;
+      },
+      setLoadingImage: function (img) {
+        loadingImage = img;
+        return methods;
+      },
+      getLoadingImage: function () {
+        return loadingImage;
       }
     };
 
@@ -368,17 +376,18 @@
   })
   .directive('comments', function (commentService, commentConfig, mvdTunnelMap) {
     var whenStmt = angular.toJson(commentConfig.getCommentTextMap())
-      .replace(/\\\"/g,'&quot;')
-      .replace(/\"/g, '\'')
-    var tpl = '<div class="comments">' + 
+        .replace(/\\\"/g,'&quot;')
+        .replace(/\"/g, '\'')
+      , img = commentConfig.getLoadingImage() ? '<img src="' + commentConfig.getLoadingImage() + '" />' : ''
+      , tpl = '<div class="comments">' + 
       (commentConfig.getShowCommentCount() ?
         ('<p class="comment-count" ng-hide="threadLoaded">' + 
           '<span ng-click="loadThread()" ng-pluralize count="numComments" when="' + whenStmt + '"></span>' + 
-          '<span class="loader" ng-show="loadingThread"><img src="themes/clean-blog/images/loader-small.gif" /></span>' + 
+          '<span class="loader" ng-show="loadingThread">' + img + '</span>' + 
         '</p>')
         : ('<p class="show-comments" ng-hide="threadLoaded">' + 
           '<span ng-click="loadThread()">Show comments</span>' + 
-          '<span class="loader" ng-show="loadingThread"><img src="themes/clean-blog/images/loader-small.gif" /></span>' + 
+          '<span class="loader" ng-show="loadingThread">' + img + '</span>' + 
         '</p>'))
       + 
       '<div class="thread" ng-show="threadLoaded">' + 
