@@ -324,9 +324,21 @@
         displayCount : function (data) {
           var textMap = data.text;
           var counts = data.counts;
-          if (!counts || !counts.length) {
+          if (!counts) {
             return;
-          };
+          } else if (!counts.length) {
+            // If there are no comments on a post, Disqus just doesn't return anything
+            // So we send '0's for all unmarked posts, but leave established in case load comes
+            // back with real numbers later
+            for (var uid in loads) {
+              if (!loads.hasOwnProperty(uid) || !loads[uid]) {
+                continue;
+              };
+              var slug = loads[uid];
+              commentConfig.getCallback('onCommentCountUpdated')(slug, 0);
+            }
+            return;
+          }
           for (var i = 0, ii = counts.length; i < ii; i++) {
             var c = counts[i];
             var slug = loads[c.uid];
